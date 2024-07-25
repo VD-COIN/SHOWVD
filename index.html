@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Display</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .input-group button {
+            padding: 10px;
+            font-size: 16px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .input-group button:hover {
+            background: #0056b3;
+        }
+        .display-box {
+            padding: 20px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="input-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password">
+    </div>
+    <div class="input-group">
+        <label for="counter">Counter Value:</label>
+        <input type="number" id="counter" min="0">
+    </div>
+    <div class="input-group">
+        <button onclick="showTexts()">Show Text</button>
+    </div>
+    <div class="display-box" id="youtubeText">YouTube Text: </div>
+    <div class="display-box" id="telegramText">Telegram Text: </div>
+    <div class="display-box" id="instagramText">Instagram Text: </div>
+    <div class="display-box" id="tiktokText">TikTok Text: </div>
+    <div class="display-box" id="facebookText">Facebook Text: </div>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <p>INCORRECT PASSWORD</p>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<script>
+    const youtubeTexts = ["Camera", "Mesmer", "Bamboo", "Beaver", "Candle", "Gannet", "Pistol", "Fiddle", "Pebble", "Ferret", "Turtle", "Magnet", "Raft", "Badge", "Cradle", "Spoon", "Bronze", "Sphinx", "Plaque", "Beeswax", "Tartan", "Jacket", "Yonder", "Bucket", "Plaque", "Rabbit", "Parrot", "Sexton", "Coarse", "Kitten", "Gecko", "Mantis", "Helium", "Wrench", "Tallow", "Weasel", "Sledge", "Bullet", "Nickel", "Moth", "Velvet", "Beaver", "Baboon", "Anorak", "Tin", "Bishop", "Jigsaw", "Falcon", "Eclair", "Pliers", "Sexton", "Hammer", "Vessel", "Jungle", "Bullet", "Racer", "Hatchet", "Sledge", "Barite", "Laurel", "Snare", "Drawer", "Trivet", "Snook", "Pencil", "Snare", "Velvet", "Album", "Summer", "Violet", "Desert", "Carrot", "Camera", "Snook", "Almond", "Cylinder", "Sphinx", "Armor", "Sexton", "Cradle", "Tin", "Packet", "Tuna", "Beeswax", "Acorns", "Crystal", "Barrow", "Sexton", "Snook", "Denim", "Magnet", "Fabric", "Plaque", "Falcon", "Helmet", "Teasel", "Jacket", "Jacket", "Flannel", "Medal"];
+    const telegramTexts = ["Fabric", "Racoon", "Vessel", "Onager", "Jungle", "Paddle", "Goggle", "Hammer", "Tunic", "Mirror", "Gerbil", "Chicken", "Beagle", "Barrel", "Raft", "Cloth", "Handle", "Statue", "Crystal", "Fabric", "Sexton", "Chicken", "Camel", "Carrot", "Jungle", "Knife", "Vessel", "Packet", "Spoon", "Barrel", "Rattle", "Jungle", "Desert", "Camera", "Pillow", "Summer", "Weasel", "Nettle", "Tarpon", "Barrel", "Tunic", "Candle", "Sexton", "Jungle", "Helmet", "Helmet", "Snare", "Jungle", "Spoon", "Pistol", "Fabric", "Fox", "Velvet", "Spoon", "Jacket", "Medal", "Candle", "Rope", "Spoon", "Weasel", "Knife", "Coconut", "Summer", "Sexton", "Helmet", "Velvet", "Barrel", "Monkey", "Armor", "Candle", "Candle", "Acorns", "Tartan", "Armor", "Candle", "Sexton", "Jacket", "Spoon", "Barrel", "Acorns", "Anorak", "Candle", "Barrel", "Spoon", "Fox", "Knife", "Helmet", "Helmet", "Fox", "Fabric", "Fox", "Barrel", "Cloth", "Jacket", "Helmet", "Knife", "Medal", "Sexton", "Candle", "Spoon", "Fox", "Fabric", "Fox", "Spoon", "Candle"];
+    const instagramTexts = ["Trivet", "Tin", "Fox", "Anorak", "Candle", "Mirror", "Jacket", "Spoon", "Candle", "Spoon", "Velvet", "Snare", "Fabric", "Barrel", "Spoon", "Trivet", "Bucket", "Desert", "Beagle", "Candle", "Sexton", "Helmet", "Barrel", "Spoon", "Mirror", "Cloth", "Fabric", "Spoon", "Spoon", "Fabric", "Sexton", "Jacket", "Barrel", "Candle", "Helmet", "Fabric", "Fox", "Rope", "Spoon", "Sexton", "Helmet", "Spoon", "Fabric", "Spoon", "Candle", "Rope", "Spoon", "Candle", "Barrel", "Fabric", "Spoon", "Desert", "Sexton", "Helmet", "Spoon", "Jacket", "Cloth", "Fabric", "Fox", "Barrel", "Candle", "Jacket", "Cloth", "Candle", "Barrel", "Fabric", "Cloth", "Jacket", "Spoon", "Barrel", "Cloth", "Fabric", "Spoon", "Barrel", "Cloth", "Fabric", "Spoon", "Barrel", "Fabric", "Fox", "Barrel", "Cloth", "Jacket", "Candle", "Helmet", "Spoon", "Barrel", "Fabric", "Helmet", "Candle", "Spoon", "Jacket", "Cloth", "Fabric", "Fox", "Spoon", "Barrel", "Cloth", "Helmet", "Jacket", "Barrel"];
+    const tiktokTexts = ["Candle", "Rope", "Spoon", "Weasel", "Knife", "Coconut", "Summer", "Sexton", "Helmet", "Velvet", "Barrel", "Monkey", "Armor", "Candle", "Candle", "Acorns", "Tartan", "Armor", "Candle", "Sexton", "Jacket", "Spoon", "Barrel", "Acorns", "Anorak", "Candle", "Barrel", "Spoon", "Fox", "Knife", "Helmet", "Helmet", "Fox", "Fabric", "Fox", "Barrel", "Cloth", "Jacket", "Helmet", "Knife", "Medal", "Sexton", "Candle", "Spoon", "Fox", "Fabric", "Fox", "Spoon", "Candle", "Fabric", "Racoon", "Vessel", "Onager", "Jungle", "Paddle", "Goggle", "Hammer", "Tunic", "Mirror", "Gerbil", "Chicken", "Beagle", "Barrel", "Raft", "Cloth", "Handle", "Statue", "Crystal", "Fabric", "Sexton", "Chicken", "Camel", "Carrot", "Jungle", "Knife", "Vessel", "Packet", "Spoon", "Barrel", "Rattle", "Jungle", "Desert", "Camera", "Pillow", "Summer", "Weasel", "Nettle", "Tarpon", "Barrel", "Tunic", "Candle", "Sexton", "Jungle", "Helmet", "Helmet", "Snare", "Jungle", "Spoon", "Pistol", "Fabric", "Fox", "Velvet", "Spoon", "Jacket", "Medal"];
+    const facebookTexts = ["Fabric", "Spoon", "Candle", "Rope", "Spoon", "Candle", "Barrel", "Fabric", "Spoon", "Desert", "Sexton", "Helmet", "Spoon", "Jacket", "Cloth", "Fabric", "Fox", "Barrel", "Candle", "Jacket", "Cloth", "Candle", "Barrel", "Fabric", "Cloth", "Jacket", "Spoon", "Barrel", "Cloth", "Fabric", "Spoon", "Barrel", "Cloth", "Fabric", "Spoon", "Barrel", "Fabric", "Fox", "Barrel", "Cloth", "Jacket", "Candle", "Helmet", "Spoon", "Barrel", "Fabric", "Helmet", "Candle", "Spoon", "Jacket", "Cloth", "Fabric", "Fox", "Spoon", "Barrel", "Cloth", "Helmet", "Jacket", "Barrel", "Tin", "Fox", "Anorak", "Candle", "Mirror", "Jacket", "Spoon", "Candle", "Spoon", "Velvet", "Snare", "Fabric", "Barrel", "Spoon", "Trivet", "Bucket", "Desert", "Beagle", "Candle", "Sexton", "Helmet", "Barrel", "Spoon", "Mirror", "Cloth", "Fabric", "Spoon", "Spoon", "Fabric", "Sexton", "Jacket", "Barrel", "Candle", "Helmet", "Fabric", "Fox", "Rope", "Spoon", "Sexton", "Helmet", "Spoon"];
+
+    function showTexts() {
+        const password = document.getElementById('password').value;
+        const counter = parseInt(document.getElementById('counter').value);
+
+        if (password === "Nahom@110108") {
+            document.getElementById('youtubeText').innerText = "YouTube Text: " + (youtubeTexts[counter] || "No text available");
+            document.getElementById('telegramText').innerText = "Telegram Text: " + (telegramTexts[counter] || "No text available");
+            document.getElementById('instagramText').innerText = "Instagram Text: " + (instagramTexts[counter] || "No text available");
+            document.getElementById('tiktokText').innerText = "TikTok Text: " + (tiktokTexts[counter] || "No text available");
+            document.getElementById('facebookText').innerText = "Facebook Text: " + (facebookTexts[counter] || "No text available");
+        } else {
+            document.getElementById('modal').style.display = 'flex';
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
+    
+    
+    
+    
+    
